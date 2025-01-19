@@ -1,4 +1,4 @@
-version := `toml get Cargo.toml workspace.package.version --raw`
+version := `git tag -l --sort -version:refname | head -n 1 | sed -e 's/v//g'`
 tag := "v" + version
 
 bump:
