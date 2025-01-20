@@ -2,6 +2,7 @@ use ratatui::Frame;
 use reqwest::Client;
 use reqwest::Url;
 use serde_json::{from_str, Value};
+use std::time::SystemTime;
 
 pub struct AppState {
     crabs: usize,
@@ -15,21 +16,18 @@ impl AppState {
 
     pub fn get_blockheight(&mut self) {
 
-    let url = Url::parse("https://mempool.space/api/blocks/tip/height").unwrap();
-    let res = reqwest::blocking::get(url).unwrap().text().unwrap();
+    let since_the_epoch = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .expect("get millis error");
+    let seconds = since_the_epoch.as_secs();
 
-//		let client = Client::new();
-//		let url = "https://mempool.space/api/blocks/tip/height";
-//		let response = client.get(url).send();
-//		if response.status().is_success() {
-//			let json_data = response.text();
-//			let data: Value = from_str(&json_data).expect("REASON");
-//			println!("API response: {}", data);
-//    } else {
-//		println!("Error: {}", response.status());
-//    }
-        self.blockheight = format!("{:}", res);
-        //format!("{:?}", res)
+        let url = Url::parse("https://mempool.space/api/blocks/tip/height").unwrap();
+        let blockheight = reqwest::blocking::get(url).unwrap().text().unwrap();
+        let blockheight_i32 = blockheight.parse::<i32>().unwrap_or(0);
+        let weeble = seconds as f64 / blockheight_i32 as f64;
+        let wobble = seconds as f64 % blockheight_i32 as f64;
+
+        self.blockheight = format!("{}/{:}/{}", weeble, blockheight_i32, wobble);
     }
 
     pub fn plus_zero(&mut self) {
@@ -50,7 +48,7 @@ impl AppState {
         for _ in 0..self.crabs {
             welcome_text.push('🦀');
         }
-        let text_string = format!("{}:{}", blockheight, welcome_text);
+        let text_string = format!("{} {}", blockheight, welcome_text);
         frame.render_widget(text_string, frame.area());
     }
 }
