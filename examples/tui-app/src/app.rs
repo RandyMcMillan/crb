@@ -62,6 +62,10 @@ impl OnEvent<Event> for TuiApp {
                     self.state.minus_one();
                     Next::do_sync(Render)
                 }
+                KeyCode::Char('b') => {
+                    self.state.get_blockheight();
+                    Next::do_sync(Render)
+                }
                 _ => {self.state.plus_zero(); Next::do_sync(Render)}
             },
             _ => Next::do_sync(Render),
