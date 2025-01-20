@@ -44,6 +44,7 @@ impl Duty<Configure> for TuiApp {
         let address = ctx.address().clone();
         let drainer = EventsDrainer::new(address);
         ctx.spawn_agent(drainer, ());
+        self.state.get_blockheight();
         Ok(Next::do_sync(Render))
     }
 }
@@ -66,9 +67,11 @@ impl OnEvent<Event> for TuiApp {
                     self.state.get_blockheight();
                     Next::do_sync(Render)
                 }
-                _ => {self.state.plus_zero(); Next::do_sync(Render)}
+                //_ => {self.state.plus_zero(); Next::do_sync(Render)}
+                _ => {self.state.get_blockheight(); Next::do_sync(Render)}
             },
-            _ => Next::do_sync(Render),
+            _ => Next::do_async(Render),
+            //_ => Next::do_sync(Render),
         };
         ctx.do_next(next_state);
         Ok(())
@@ -81,6 +84,7 @@ impl DoSync<Render> for TuiApp {
     fn once(&mut self, _: &mut Render) -> Result<Next<Self>> {
         let terminal = self.terminal.get_mut()?;
         terminal.draw(|frame| self.state.render(frame))?;
+        self.state.get_blockheight();
         Ok(Next::events())
     }
 }
