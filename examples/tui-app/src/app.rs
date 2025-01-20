@@ -54,10 +54,15 @@ impl OnEvent<Event> for TuiApp {
         let next_state = match event {
             Event::Key(event) => match event.code {
                 KeyCode::Char('q') => Next::do_async(Terminate),
-                _ => {
+                KeyCode::Char('+') => {
                     self.state.plus_one();
                     Next::do_sync(Render)
                 }
+                KeyCode::Char('-') => {
+                    self.state.minus_one();
+                    Next::do_sync(Render)
+                }
+                _ => {self.state.plus_zero(); Next::do_sync(Render)}
             },
             _ => Next::do_sync(Render),
         };

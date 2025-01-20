@@ -9,9 +9,17 @@ impl AppState {
         Self { crabs: 0 }
     }
 
+    pub fn plus_zero(&mut self) {
+        self.crabs = 0;
+    }
     pub fn plus_one(&mut self) {
         self.crabs += 1;
     }
+    pub fn minus_one(&mut self) {
+		if self.crabs >= 1 {
+        self.crabs -= 1;
+		}
+	}
 
     pub fn render(&self, frame: &mut Frame<'_>) {
         let mut text = String::from("Hello, CRaBs! ");
