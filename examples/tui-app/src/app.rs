@@ -84,6 +84,14 @@ impl DoSync<Render> for TuiApp {
         Ok(Next::events())
     }
 }
+#[async_trait]
+impl DoAsync<Render> for TuiApp {
+    async fn once(&mut self, _: &mut Render) -> Result<Next<Self>> {
+        ratatui::try_restore()?;
+		self.state.get_blockheight();
+        Ok(Next::events())
+    }
+}
 
 struct Terminate;
 
