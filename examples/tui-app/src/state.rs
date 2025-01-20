@@ -27,7 +27,7 @@ impl AppState {
         let weeble = seconds as f64 / blockheight_i32 as f64;
         let wobble = seconds as f64 % blockheight_i32 as f64;
 
-        self.blockheight = format!("{}/{:}/{}", weeble, blockheight_i32, wobble);
+        self.blockheight = format!("{}/{:}/{}", weeble.floor(), blockheight_i32, wobble);
     }
 
     pub fn plus_zero(&mut self) {
