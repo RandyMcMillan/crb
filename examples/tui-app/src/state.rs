@@ -16,7 +16,7 @@ impl AppState {
     pub fn get_blockheight(&mut self) {
 
     let url = Url::parse("https://mempool.space/api/blocks/tip/height").unwrap();
-    let res = reqwest::blocking::get(url).unwrap();
+    let res = reqwest::blocking::get(url).unwrap().text().unwrap();
 
 //		let client = Client::new();
 //		let url = "https://mempool.space/api/blocks/tip/height";
@@ -28,7 +28,7 @@ impl AppState {
 //    } else {
 //		println!("Error: {}", response.status());
 //    }
-        self.blockheight = format!("{:?}", res);
+        self.blockheight = format!("{:}", res);
         //format!("{:?}", res)
     }
 
